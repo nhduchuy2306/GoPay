@@ -1,6 +1,7 @@
 package user
 
 import (
+	"gopay/internal/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +17,7 @@ func NewHandler(s Service) *Handler {
 
 func (h *Handler) RegisterRouters(rg *gin.RouterGroup) {
 	g := rg.Group("/users")
-	g.GET("", h.GetAll)
+	g.GET("", middleware.AuthMiddleWare(), h.GetAll)
 	g.GET("/:id", h.GetByID)
 }
 

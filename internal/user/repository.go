@@ -1,6 +1,8 @@
 package user
 
 import (
+	"log"
+
 	"gorm.io/gorm"
 )
 
@@ -20,7 +22,7 @@ type repo struct {
 
 func NewRepository(db *gorm.DB) Repository {
 	if err := db.AutoMigrate(&User{}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	return &repo{db: db}
 }

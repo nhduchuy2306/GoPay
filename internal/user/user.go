@@ -4,21 +4,23 @@ import (
 	"gopay/internal/common"
 )
 
-type Role string
-
-const (
-	RoleUser  Role = "USER"
-	RoleAdmin Role = "ADMIN"
-)
-
 type User struct {
 	common.BaseModel
 	Email    string `gorm:"uniqueIndex;not null" json:"email"`
 	Password string `gorm:"not null" json:"-"`
-	Role     Role   `gorm:"not null" json:"role"`
+	Role     string `gorm:"not null" json:"role"`
 }
 
 type LoginRequest struct {
-	Email    string
-	Password string
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+}
+
+type RegisterRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }

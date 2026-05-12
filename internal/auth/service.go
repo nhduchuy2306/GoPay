@@ -2,38 +2,46 @@ package auth
 
 import (
 	"gopay/internal/user"
+	"gopay/internal/utils"
+	"log"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type LoginRequest = user.LoginRequest
-type UserService = user.Service
-type User = user.User
-
 type Service interface {
-	Login(request LoginRequest) User
-	Register(request User) User
+	Login(request user.LoginRequest) user.LoginResponse
+	Register(request user.User) user.User
 }
 
 type service struct {
-	userService UserService
+	userService user.Service
 }
 
-func NewService(userService UserService) Service {
+func NewService(userService user.Service) Service {
 	return &service{userService: userService}
 }
 
-func (s *service) Login(request LoginRequest) User {
-	loginUser, ok := s.userService.GetByEmailAndPassword(request.Email, request.Password)
+func (s *service) Login(request user.LoginRequest) user.LoginResponse {
+	loginUser, ok := s.userService.GetByEmail(request.Email)
 	if !ok {
-		panic("Can not login")
+		log.Fatal("Can not login")
 	}
-	return loginUser
+	hashPassword := loginUser.Password
+	if ok := utils.MatchPassword(hashPassword, request.Password); !ok {
+		log.Fatal("Password not correct")
+	}
+	token, err := s.generateToken(loginUser)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return user.LoginResponse{
+		Token: token,
+	}
 }
 
-func (s *service) Register(request User) User {
+func (s *service) Register(request user.User) user.User {
 	registerUser := s.userService.Create(request)
 	return registerUser
 }
@@ -45,7 +53,7 @@ func (s *service) VerifyToken(token string) (*jwt.Token, error) {
 	})
 }
 
-func (s *service) generateToken(user User) (string, error) {
+func (s *service) generateToken(user user.User) (string, error) {
 	claims := jwt.MapClaims{
 		"email": user.Email,
 		"role":  user.Role,

@@ -1,15 +1,18 @@
 package auth
 
 import (
+	"gopay/internal/user"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
-	authService Service
+	service Service
 }
 
 func NewHandler(s Service) *Handler {
-	return &Handler{authService: s}
+	return &Handler{service: s}
 }
 
 func (h *Handler) RegisterRouters(rg *gin.RouterGroup) {
@@ -18,10 +21,24 @@ func (h *Handler) RegisterRouters(rg *gin.RouterGroup) {
 	g.POST("/register", h.Register)
 }
 
-func (h *Handler) Login(c *gin.Context) {
-
+func (h *Handler) Login(context *gin.Context) {
+	var body user.LoginRequest
+	if err := context.ShouldBindJSON(&body); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	context.JSON(http.StatusOK, h.service.Login(body))
 }
 
-func (h *Handler) Register(c *gin.Context) {
-
+func (h *Handler) Register(context *gin.Context) {
+	var body user.RegisterRequest
+	if err := context.ShouldBindJSON(&body); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	created := h.service.Register(user.User{
+		Email:    body.Email,
+		Password: body.Password,
+	})
+	context.JSON(http.StatusCreated, created)
 }

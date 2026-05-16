@@ -31,3 +31,15 @@ type Delivery struct {
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
 }
+
+type CreateEndpointRequest struct {
+	URL      string `json:"url"`
+	Secret   string `json:"secret,omitempty"`
+	IsActive bool   `json:"is_active,omitempty"`
+}
+
+type UpdateEndpointRequest struct {
+	URL      string `json:"url,omitempty"`
+	Secret   string `json:"secret,omitempty"`
+	IsActive *bool  `json:"is_active,omitempty"`
+}

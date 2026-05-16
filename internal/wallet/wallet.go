@@ -20,3 +20,21 @@ type Wallet struct {
 type DepositRequest struct {
 	Amount int64 `json:"amount,omitempty"`
 }
+
+type WithdrawRequest struct {
+	Amount int64 `json:"amount,omitempty"`
+}
+
+type TransferRequest struct {
+	FromWalletID   string `json:"from_wallet_id"`
+	ToWalletID     string `json:"to_wallet_id"`
+	Amount         int64  `json:"amount"`
+	Description    string `json:"description,omitempty"`
+	IdempotencyKey string `json:"idempotency_key,omitempty"`
+}
+
+type CreateRequest struct {
+	UserID   string `json:"user_id"`
+	Currency string `json:"currency"`
+	Balance  int64  `json:"balance,omitempty"`
+}

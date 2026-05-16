@@ -18,3 +18,15 @@ type Transaction struct {
 	Description    string        `json:"description,omitempty"`
 	CreatedAt      time.Time     `json:"created_at"`
 }
+
+type CreateRequest struct {
+	IdempotencyKey string `json:"idempotency_key"`
+	FromWalletID   string `json:"from_wallet_id"`
+	ToWalletID     string `json:"to_wallet_id"`
+	Amount         int64  `json:"amount"`
+	Description    string `json:"description,omitempty"`
+}
+
+type StatusUpdateRequest struct {
+	Status string `json:"status"`
+}

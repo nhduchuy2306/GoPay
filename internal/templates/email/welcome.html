@@ -1,7 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+      body {
+          margin: 0;
+          font-family: Arial, Helvetica, sans-serif;
+          background: #f4f7fb;
+          color: #1f2937;
+      }
+
+      .container {
+          max-width: 640px;
+          margin: 0 auto;
+          padding: 32px 20px;
+      }
+
+      .card {
+          background: #ffffff;
+          border-radius: 16px;
+          padding: 32px;
+          box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+          border: 1px solid #e5e7eb;
+      }
+
+      .badge {
+          display: inline-block;
+          background: #dbeafe;
+          color: #1d4ed8;
+          padding: 6px 12px;
+          border-radius: 999px;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          margin-bottom: 16px;
+      }
+
+      h1 {
+          margin: 0 0 12px;
+          font-size: 28px;
+      }
+
+      p {
+          line-height: 1.6;
+          font-size: 15px;
+          margin: 0 0 12px;
+      }
+
+      .footer {
+          color: #6b7280;
+          font-size: 13px;
+          margin-top: 20px;
+      }
+
+      .highlight {
+          color: #2563eb;
+          font-weight: 700;
+      }
+  </style>
+</head>
 <body>
-<h2>Welcome, {{.Name}}</h2>
-<p>Thanks for joining us 🎉</p>
+<div class="container">
+  <div class="card">
+    <div class="badge">Welcome to Gopay</div>
+    <h1>Hi {{.Name}}, welcome aboard 👋</h1>
+    <p>Your account has been created successfully and you’re ready to start using <span class="highlight">Gopay</span>.
+    </p>
+    <p>We’re excited to have you with us. You can now manage wallets, make transfers, and keep track of every
+      transaction in one place.</p>
+    <p class="footer">If you didn’t create this account, please contact support immediately.</p>
+  </div>
+</div>
 </body>
 </html>

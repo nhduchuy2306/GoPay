@@ -24,3 +24,26 @@ type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type UpdateRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password,omitempty"`
+	Role     string `json:"role,omitempty"`
+}
+
+type ChangePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
+func (u *User) GetID() string {
+	return u.ID
+}
+
+func (u *User) GetEmail() string {
+	return u.Email
+}
+
+func (u *User) GetRole() string {
+	return u.Role
+}

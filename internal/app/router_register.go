@@ -4,10 +4,14 @@ import (
 	"gopay/internal/auth"
 	"gopay/internal/mail"
 	"gopay/internal/middleware"
+	"gopay/internal/notification"
 	"gopay/internal/transaction"
 	"gopay/internal/user"
 	"gopay/internal/wallet"
+	"gopay/internal/webhook"
 	"log"
+	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -29,29 +33,49 @@ func RegisterAllModules(db *gorm.DB, engine *gin.Engine) {
 
 func registerAllV1(db *gorm.DB, group *gin.RouterGroup) {
 	// Mail
-	mailService := mail.NewService("localhost", 1025)
+	mailHost := os.Getenv("MAIL_HOST")
+	if mailHost == "" {
+		mailHost = "localhost"
+	}
+	mailPort, err := strconv.Atoi(os.Getenv("MAIL_PORT"))
+	if err != nil || mailPort == 0 {
+		mailPort = 1025
+	}
+	mailService := mail.NewService(mailHost, mailPort)
+	emailSender := notification.NewEmailSender(mailService)
+	notificationService := notification.NewService(emailSender)
 	log.Println("Init Mail", mailService)
 
 	// User
 	userRepo := user.NewRepository(db)
 	userService := user.NewService(userRepo)
-	userHandler := user.NewHandler(userService)
-	userHandler.RegisterRouters(group)
-
-	// Auth
-	authService := auth.NewService(userService)
-	authHandler := auth.NewHandler(authService)
-	authHandler.RegisterRouters(group)
 
 	// Wallet
 	walletRepo := wallet.NewRepository(db)
 	walletService := wallet.NewService(walletRepo)
+
+	// Auth
+	authService := auth.NewService(userService, walletService, notificationService)
+	authHandler := auth.NewHandler(authService)
+	authHandler.RegisterRouters(group)
+
+	// User
+	userHandler := user.NewHandler(userService)
+	userHandler.RegisterRouters(group)
+
 	walletHandler := wallet.NewHandler(walletService)
 	walletHandler.RegisterRouters(group)
 
 	// Transaction
 	transactionRepo := transaction.NewRepository(db)
-	transactionService := transaction.NewService(transactionRepo)
+	transactionService := transaction.NewService(transactionRepo, walletService, notificationService)
 	transactionHandler := transaction.NewHandler(transactionService)
 	transactionHandler.RegisterRouters(group)
+
+	// Webhook
+	webhookRepo := webhook.NewRepository(db)
+	webhookWorker := webhook.NewWorker()
+	webhookService := webhook.NewService(webhookRepo, webhookWorker)
+	webhookHandler := webhook.NewHandler(webhookService)
+	webhookHandler.RegisterRouters(group)
 }

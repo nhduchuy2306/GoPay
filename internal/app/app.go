@@ -1,6 +1,8 @@
 package app
 
 import (
+	"context"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -9,7 +11,7 @@ type App struct {
 	engine *gin.Engine
 }
 
-func New() *App {
+func New(ctx context.Context) *App {
 	// Init Env
 	InitEnv()
 
@@ -21,6 +23,9 @@ func New() *App {
 
 	// Init database
 	db := InitDB()
+
+	// Start background workers
+	StartBackgroundWorkers(ctx, db)
 
 	// Register modules
 	RegisterAllModules(db, engine)

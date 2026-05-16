@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+      body {
+          margin: 0;
+          font-family: Arial, Helvetica, sans-serif;
+          background: linear-gradient(180deg, #eef6ff 0%, #f8fafc 100%);
+          color: #0f172a;
+      }
+
+      .container {
+          max-width: 640px;
+          margin: 0 auto;
+          padding: 32px 20px;
+      }
+
+      .card {
+          background: #ffffff;
+          border-radius: 18px;
+          padding: 32px;
+          box-shadow: 0 16px 40px rgba(15, 23, 42, 0.10);
+          border: 1px solid #dbeafe;
+      }
+
+      .badge {
+          display: inline-block;
+          background: #dcfce7;
+          color: #15803d;
+          padding: 6px 12px;
+          border-radius: 999px;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          margin-bottom: 16px;
+      }
+
+      h1 {
+          margin: 0 0 8px;
+          font-size: 28px;
+      }
+
+      p {
+          line-height: 1.6;
+          font-size: 15px;
+          margin: 0 0 12px;
+      }
+
+      .amount {
+          margin: 20px 0;
+          padding: 18px 20px;
+          border-radius: 14px;
+          background: #eff6ff;
+          border: 1px solid #bfdbfe;
+          font-size: 18px;
+          font-weight: 700;
+          color: #1d4ed8;
+      }
+
+      .meta {
+          margin-top: 18px;
+          padding: 16px 20px;
+          border-radius: 14px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          font-size: 14px;
+          color: #334155;
+      }
+
+      .meta div {
+          margin: 6px 0;
+      }
+
+      .footer {
+          color: #64748b;
+          font-size: 13px;
+          margin-top: 20px;
+      }
+
+      .highlight {
+          color: #2563eb;
+          font-weight: 700;
+      }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="badge">Transfer completed</div>
+    <h1>Money received successfully</h1>
+    <p>Hello {{.Recipient}}, your wallet has just received a transfer.</p>
+    <div class="amount">+{{.Amount}} {{.Currency}}</div>
+    <div class="meta">
+      <div><strong>Transaction ID:</strong> {{.TransactionID}}</div>
+      <div><strong>From wallet:</strong> {{.FromWalletID}}</div>
+      <div><strong>To wallet:</strong> {{.ToWalletID}}</div>
+      <div><strong>Description:</strong> {{.Description}}</div>
+    </div>
+    <p class="footer">This is an automated message from <span class="highlight">Gopay</span>.</p>
+  </div>
+</div>
+</body>
+</html>
+

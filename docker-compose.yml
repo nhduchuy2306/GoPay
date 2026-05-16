@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gopay-postgres
+    environment:
+      POSTGRES_DB: gopay
+      POSTGRES_USER: gopay
+      POSTGRES_PASSWORD: gopay
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gopay -d gopay"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  redis:
+    image: redis:7-alpine
+    container_name: gopay-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: gopay-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+  server:
+    image: golang:1.26-alpine
+    container_name: gopay-server
+    working_dir: /app
+    command: sh -c "go run ./cmd/server"
+    volumes:
+      - ./:/app
+      - go_mod_cache:/go/pkg/mod
+    environment:
+      DB_HOST: postgres
+      DB_USER_NAME: gopay
+      DB_PASSWORD: gopay
+      DB_NAME: gopay
+      DB_PORT: "5432"
+      SECRET_KEY: change-me-in-prod
+      MAIL_HOST: mailhog
+      MAIL_PORT: "1025"
+    ports:
+      - "8888:8888"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+volumes:
+  postgres_data:
+  redis_data:
+  go_mod_cache:
